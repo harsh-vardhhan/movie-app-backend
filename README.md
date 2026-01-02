@@ -4,6 +4,9 @@
 
 **Base URL**: `https://hxzoqzlhck.execute-api.ap-south-1.amazonaws.com/`
 
+## Frontend Repository
+[movie-app-frontend](https://github.com/harsh-vardhhan/movie-app-frontend)
+
 ## API Endpoints
 
 | Method | Path | Response Type | Description |
