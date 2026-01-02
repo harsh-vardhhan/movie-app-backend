@@ -8,9 +8,10 @@ RUN pip install -r requirements.txt
 
 # Copy function code
 COPY app ${LAMBDA_TASK_ROOT}/app
+COPY movies.db ${LAMBDA_TASK_ROOT}
 
-# Run the seed script to populate the database
-RUN python -m app.seed
+# Seed script is no longer run at build time, we use the pre-seeded DB
+# RUN python -m app.seed
 
 # Set the CMD to your handler (could also be done as a parameter override outside of the Dockerfile)
 CMD [ "app.main.handler" ]
