@@ -38,7 +38,7 @@ resource "aws_lambda_function" "app_lambda" {
   # Placeholder image for initial apply if not using targeted apply, 
   # but our CI/CD strategy handles this. 
   # We use the ECR repo URL + tag.
-  image_uri = "${aws_ecr_repository.app_repo.repository_url}:latest"
+  image_uri = "${aws_ecr_repository.app_repo.repository_url}:${var.image_tag}"
 
   memory_size                    = 128
   timeout                        = 10

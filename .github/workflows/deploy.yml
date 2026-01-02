@@ -59,17 +59,16 @@ jobs:
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: movie-app-backend # Must match variable in TF or result of TF
-          IMAGE_TAG: latest 
-          # Or use github.sha for versioning
+          IMAGE_TAG: ${{ github.sha }}
         run: |
           # Get repo URL from terraform output to be sure match
           cd ${{ env.TF_WORKING_DIR }}
           REPO_URL=$(terraform output -raw ecr_repository_url)
           
           cd ../
-          docker build --platform linux/arm64 -t $REPO_URL:latest .
-          docker push $REPO_URL:latest
+          docker build --platform linux/arm64 -t $REPO_URL:$IMAGE_TAG .
+          docker push $REPO_URL:$IMAGE_TAG
 
       - name: Deploy Infrastructure (Full Apply)
         working-directory: ${{ env.TF_WORKING_DIR }}
-        run: terraform apply -auto-approve
+        run: terraform apply -var="image_tag=${{ github.sha }}" -auto-approve

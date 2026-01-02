@@ -9,3 +9,9 @@ variable "app_name" {
   type        = string
   default     = "movie-app-backend"
 }
+
+variable "image_tag" {
+  description = "Tag of the Docker image to deploy"
+  type        = string
+  default     = "latest"
+}
