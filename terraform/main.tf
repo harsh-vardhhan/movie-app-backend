@@ -40,9 +40,10 @@ resource "aws_lambda_function" "app_lambda" {
   # We use the ECR repo URL + tag.
   image_uri = "${aws_ecr_repository.app_repo.repository_url}:latest"
 
-  memory_size   = 128
-  timeout       = 10
-  architectures = ["arm64"]
+  memory_size                    = 128
+  timeout                        = 10
+  architectures                  = ["arm64"]
+  reserved_concurrent_executions = 10
 
   environment {
     variables = {
