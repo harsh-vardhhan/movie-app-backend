@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from typing import List, Optional
 
 class GenreBase(BaseModel):
@@ -6,27 +6,21 @@ class GenreBase(BaseModel):
 
 class Genre(GenreBase):
     id: int
-
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 class ActorBase(BaseModel):
     name: str
 
 class Actor(ActorBase):
     id: int
-
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 class DirectorBase(BaseModel):
     name: str
 
 class Director(DirectorBase):
     id: int
-
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 class MovieBase(BaseModel):
     title: str
@@ -42,17 +36,13 @@ class Movie(MovieBase):
     director: Optional[Director] = None
     genres: List[Genre] = []
     actors: List[Actor] = []
-
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 class MovieList(MovieBase):
     id: int
     director: Optional[Director] = None
     genres: List[Genre] = []
-    
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 class ActorDetail(Actor):
     movies: List[MovieList] = []
