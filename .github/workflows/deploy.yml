@@ -1,0 +1,66 @@
+name: Deploy to AWS Lambda
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  id-token: write # This is required for requesting the JWT
+  contents: read  # This is required for actions/checkout
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      AWS_REGION: ap-south-1
+      TF_WORKING_DIR: ./terraform
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform Init
+        working-directory: ${{ env.TF_WORKING_DIR }}
+        run: terraform init
+
+      - name: Create ECR Repository (Targeted Apply)
+        working-directory: ${{ env.TF_WORKING_DIR }}
+        # effectively creates the repo if it doesn't exist, so we can push to it.
+        # -refresh=false speeds it up if we know state is empty/local, 
+        # but standard apply is safer.
+        run: terraform apply -target=aws_ecr_repository.app_repo -auto-approve
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build, tag, and push image to Amazon ECR
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: movie-app-backend # Must match variable in TF or result of TF
+          IMAGE_TAG: latest 
+          # Or use github.sha for versioning
+        run: |
+          # Get repo URL from terraform output to be sure match
+          cd ${{ env.TF_WORKING_DIR }}
+          REPO_URL=$(terraform output -raw ecr_repository_url)
+          
+          cd ../
+          docker build --platform linux/arm64 -t $REPO_URL:latest .
+          docker push $REPO_URL:latest
+
+      - name: Deploy Infrastructure (Full Apply)
+        working-directory: ${{ env.TF_WORKING_DIR }}
+        run: terraform apply -auto-approve
