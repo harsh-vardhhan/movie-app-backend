@@ -1,5 +1,7 @@
 # Live API Documentation
 
+![Deploy to AWS Lambda](https://github.com/harsh-vardhhan/movie-app-backend/actions/workflows/deploy.yml/badge.svg)
+
 **Base URL**: `https://hxzoqzlhck.execute-api.ap-south-1.amazonaws.com/`
 
 ## API Endpoints
