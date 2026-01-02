@@ -1,14 +1,21 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from contextlib import asynccontextmanager
 from mangum import Mangum
 from .database import engine
 from . import models
 from .routers import movies, actors, directors, genres
+from .seed import seed_data
 
 # Create tables if not exist
 models.Base.metadata.create_all(bind=engine)
 
-app = FastAPI(title="Movie App Backend")
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    seed_data()
+    yield
+
+app = FastAPI(title="Movie App Backend", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
