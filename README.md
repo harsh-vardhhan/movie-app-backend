@@ -73,3 +73,22 @@ Movie genre information.
 |---|---|---|
 | `id` | `integer` | Unique identifier for the genre. |
 | `name` | `string` | Name of the genre (e.g., "Action", "Drama"). |
+
+## Running Locally
+
+### Without Docker
+You can run the application locally using `uv` and `uvicorn`.
+
+```bash
+uv run uvicorn app.main:app --reload
+```
+**URL**: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
+
+### With Docker
+Since the Docker image is built for AWS Lambda, running it locally requires overriding the entrypoint to serve HTTP requests directly.
+
+```bash
+docker build -t movie-app .
+docker run -p 9000:8080 --entrypoint /usr/local/bin/python -it movie-app -m uvicorn app.main:app --host 0.0.0.0 --port 8080
+```
+**URL**: [http://localhost:9000/docs](http://localhost:9000/docs)
