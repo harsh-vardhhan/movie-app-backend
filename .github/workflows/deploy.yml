@@ -42,6 +42,10 @@ jobs:
         # but standard apply is safer.
         run: terraform apply -target=aws_ecr_repository.app_repo -auto-approve
 
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
