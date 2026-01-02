@@ -19,7 +19,11 @@ app = FastAPI(title="Movie App Backend", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[
+        "http://localhost:3000",
+        "http://localhost:8000",
+        "https://d2mzembq1jdwby.cloudfront.net",
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
