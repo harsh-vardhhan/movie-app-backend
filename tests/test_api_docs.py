@@ -75,8 +75,8 @@ def test_generate_api_docs():
         clean_response = route["Response"].replace("|", "\\|").replace("\n", " ")
         table += f"| {route['Method']} | {route['Path']} | {route['Status']} | `<pre>{clean_response}</pre>` |\n"
 
-    # Update README.md
-    readme_path = "README.md"
+    # Update test.md
+    readme_path = "test.md"
     start_marker = "<!-- API_DOCS_START -->"
     end_marker = "<!-- API_DOCS_END -->"
     
